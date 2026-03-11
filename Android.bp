@@ -1,0 +1,37 @@
+cc_defaults {
+    name: "imx_parser_defaults",
+
+    cflags: [
+        "-Wno-unused-parameter",
+        "-Wno-implicit-fallthrough",
+        "-Werror",
+        "-Wno-date-time",
+        "-Wno-error=date-time",
+        "-DANDROID",
+        "-DNDEBUG",
+    ],
+
+    ldflags: ["-Wl,-Bsymbolic"],
+
+    include_dirs: [
+        "vendor/nxp-opensource/imx-parser/ghdr",
+        "vendor/nxp-opensource/imx-parser/ghdr/common",
+        "vendor/nxp-opensource/imx-parser/src/parser_libs/inc",
+        "vendor/nxp-opensource/imx-parser/src/parser_libs/common",
+    ],
+
+    sanitize: {
+        misc_undefined: [
+            "signed-integer-overflow",
+            "unsigned-integer-overflow",
+            "bounds",
+        ],
+        diag: {
+            misc_undefined: [
+                "signed-integer-overflow",
+                "unsigned-integer-overflow",
+                "bounds",
+            ],
+        },
+    },
+}

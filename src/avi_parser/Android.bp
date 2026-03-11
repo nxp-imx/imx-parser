@@ -1,0 +1,21 @@
+cc_library_shared {
+    name: "lib_avi_parser_arm11_elinux.3.0",
+
+    srcs: [
+        "lib/src/*.c",
+    ],
+
+    local_include_dirs: [
+        "lib/inc",
+    ],
+
+    cflags: [
+        "-DSUPPORT_LARGE_AVI_FILE",
+    ],
+
+    defaults: [
+        "imx_parser_defaults",
+    ],
+
+    relative_install_path: "extractors",
+}

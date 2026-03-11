@@ -1,0 +1,27 @@
+cc_library_shared {
+    name: "lib_mpg2_parser_arm11_elinux.3.0",
+
+    srcs: [
+        "lib/src/*.c",
+    ],
+
+    local_include_dirs: [
+        "lib/inc",
+    ],
+
+    cflags: [
+        "-D_LINUX",
+    ],
+
+    static_libs: [
+        "lib_h264_parser_arm11_elinux",
+        "lib_hevc_parser_arm11_elinux",
+        "lib_latm_parser_arm11_elinux",
+    ],
+
+    defaults: [
+        "imx_parser_defaults",
+    ],
+
+    relative_install_path: "extractors",
+}

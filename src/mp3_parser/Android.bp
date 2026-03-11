@@ -1,0 +1,28 @@
+cc_library_shared {
+    name: "lib_mp3_parser_arm11_elinux.3.0",
+
+    srcs: [
+        "lib/src/audio_parser_base.c",
+        "lib/src/mp3_parser_api.c",
+        "lib/src/mp3_parse.c",
+    ],
+
+    local_include_dirs: [
+        "lib/inc",
+    ],
+
+    static_libs: [
+        "lib_id3_parser_arm11_elinux",
+        "lib_audio_index_table_arm11_elinux",
+    ],
+
+    cflags: [
+        "-DPARSER_MP3_LAME_ENC_TAG",
+    ],
+
+    defaults: [
+        "imx_parser_defaults",
+    ],
+
+    relative_install_path: "extractors",
+}

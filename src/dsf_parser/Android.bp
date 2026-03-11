@@ -1,0 +1,31 @@
+cc_library_shared {
+    name: "lib_dsf_parser_arm11_elinux.3.0",
+
+    srcs: [
+        "lib/src/DSFParser.c",
+    ],
+
+    local_include_dirs: [
+        "lib/inc",
+    ],
+
+    cflags: [
+        "-DANDROID",
+    ],
+
+    shared_libs: [
+        "liblog",
+    ],
+
+    static_libs: [
+        "lib_id3_parser_arm11_elinux",
+        "lib_audio_index_table_arm11_elinux",
+    ],
+
+    defaults: [
+        "imx_parser_defaults",
+    ],
+
+    relative_install_path: "extractors",
+}
+

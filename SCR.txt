@@ -1,0 +1,13 @@
+NXP Software Content Register
+--------------------------------------------
+
+Package:                   imx-parser.git
+Outgoing License:          BSD 3-clause "New" or "Revised" License
+License File:              LICENSE.txt
+Type of content:           Source code
+Description and comments:  i.MX multimedia parser libraries
+                           Parsers for: APE, AVI, DSF, FLV, MKV, MP3, MPG2, OGG
+Origin:                    NXP (BSD-3-Clause)
+                           The Android Open Source Project(Apache License 2.0)
+
+--------------------------------------------

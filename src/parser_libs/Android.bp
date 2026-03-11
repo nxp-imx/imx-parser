@@ -1,0 +1,107 @@
+cc_defaults {
+    name: "imx_parser_libs_defaults",
+
+    cflags: [
+        "-Wno-unused-parameter",
+        "-Wno-implicit-fallthrough",
+        "-Werror",
+    ],
+
+    ldflags: ["-Wl,-Bsymbolic"],
+
+    include_dirs: [
+        "vendor/nxp-opensource/imx-parser/ghdr",
+        "vendor/nxp-opensource/imx-parser/ghdr/common",
+    ],
+
+    local_include_dirs: [
+        "inc",
+        "common",
+    ],
+
+    sanitize: {
+        misc_undefined: [
+            "signed-integer-overflow",
+            "unsigned-integer-overflow",
+            "bounds",
+        ],
+        diag: {
+            misc_undefined: [
+                "signed-integer-overflow",
+                "unsigned-integer-overflow",
+                "bounds",
+            ],
+        },
+    },
+}
+
+cc_library_static {
+    name: "lib_h264_parser_arm11_elinux",
+
+    srcs: [
+        "h264_parser/lib/src/h264Parser.c",
+    ],
+
+    defaults: [
+        "imx_parser_libs_defaults",
+    ],
+
+}
+
+
+cc_library_static {
+    name: "lib_hevc_parser_arm11_elinux",
+
+    srcs: [
+        "hevc_parser/lib/src/hevcParser.c",
+    ],
+
+    defaults: [
+        "imx_parser_libs_defaults",
+    ],
+}
+
+cc_library_static {
+    name: "lib_latm_parser_arm11_elinux",
+
+    srcs: [
+        "aac_latm_parser/lib/src/latmParser.c",
+    ],
+
+    defaults: [
+        "imx_parser_libs_defaults",
+    ],
+}
+
+cc_library_static {
+    name: "lib_id3_parser_arm11_elinux",
+
+    srcs: [
+        "id3_parser/lib/src/ID3Parser.c",
+        "id3_parser/lib/src/ID3ParserCore.c",
+    ],
+
+    local_include_dirs: [
+        "id3_parser/lib/inc",
+    ],
+
+    defaults: [
+        "imx_parser_libs_defaults",
+    ],
+}
+
+cc_library_static {
+    name: "lib_audio_index_table_arm11_elinux",
+
+    srcs: [
+        "audio_index_table/lib/src/AudioIndexTable.c",
+    ],
+
+    local_include_dirs: [
+        "audio_index_table/lib/inc",
+    ],
+
+    defaults: [
+        "imx_parser_libs_defaults",
+    ],
+}

@@ -1,0 +1,60 @@
+cc_defaults {
+    name: "imx_parser_test_defaults",
+
+    local_include_dirs: [
+        "inc",
+    ],
+
+    static_libs: [
+        "lib_id3_parser_arm11_elinux",
+    ],
+
+    cflags: [
+        "-DSUPPORT_LARGE_FILE",
+        "-Wno-error=pointer-sign",
+    ],
+
+    defaults: [
+        "imx_parser_defaults",
+    ],
+}
+
+cc_binary {
+    name: "test_fsl_parser_arm11_elinux",
+
+    srcs: [
+        "src/fsl_parser_test.c",
+        "src/fsl_osal.c",
+        "src/aac.c",
+        "src/err_check.c",
+        "src/queue_mgr.c",
+        "src/memory_mgr.c",
+        "src/subtitle.c",
+        "src/fsl_parser_log.c",
+    ],
+
+    defaults: [
+        "imx_parser_defaults",
+        "imx_parser_test_defaults",
+    ],
+}
+
+cc_binary {
+    name: "regression_test_arm11_elinux",
+
+    srcs: [
+        "src/regression_test.c",
+        "src/fsl_osal.c",
+        "src/aac.c",
+        "src/err_check.c",
+        "src/queue_mgr.c",
+        "src/memory_mgr.c",
+        "src/subtitle.c",
+        "src/fsl_parser_log.c",
+    ],
+
+    defaults: [
+        "imx_parser_defaults",
+        "imx_parser_test_defaults",
+    ],
+}
