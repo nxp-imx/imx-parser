@@ -6,13 +6,13 @@ inc_pub  = include_directories('../../../ghdr/common')
 inc_parser_libs = include_directories('../inc')
 inc_common = include_directories('../common')
 
-lib_aac_latm_parser = static_library(
-  'lib_aac_latm_parser_arm_elinux',
+lib_aac_latm_parser = shared_library(
+  'aac_latm_parser_arm_elinux',
   srcs,
   include_directories : [inc_pub, inc_parser_libs, inc_common],
   name_prefix         : 'lib_',
-  pic                 : true,
-  install             : false,
+  install             : true,
+  install_dir         : [libs_install_dir],
 )
 
 aac_latm_parser_dep = declare_dependency(

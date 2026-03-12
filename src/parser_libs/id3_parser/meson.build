@@ -6,17 +6,16 @@ inc_pub  = include_directories('../../../ghdr/common')
 inc_priv = include_directories('lib/inc')
 inc_parser_libs = include_directories('../inc')
 
-lib_id3_parser = static_library(
+lib_id3_parser = shared_library(
   'id3_parser_arm_elinux',
   srcs,
   include_directories : [inc_pub, inc_priv, inc_parser_libs],
   name_prefix         : 'lib_',
-  pic                 : true,
-  install             : false,
+  install             : true,
+  install_dir         : [libs_install_dir],
 )
 
 id3_parser_dep = declare_dependency(
   include_directories : [inc_parser_libs],
   link_with           : lib_id3_parser,
 )
-

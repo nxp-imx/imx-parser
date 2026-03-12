@@ -23,10 +23,22 @@ pub_header_common = [
 	'ghdr/common/fsl_types.h',
 ]
 
+parser_lib_header_common = [
+	'src/parser_libs/inc/AudioIndexTable.h',
+	'src/parser_libs/inc/h264parser.h',
+	'src/parser_libs/inc/hevcparser.h',
+	'src/parser_libs/inc/ID3GenreTable.h',
+	'src/parser_libs/inc/ID3ParserCore.h',
+	'src/parser_libs/inc/ID3Parser.h',
+	'src/parser_libs/inc/latmParser.h',
+	'src/parser_libs/common/utils.h',
+]
+
 libs_install_dir = join_paths(get_option('libdir'), 'imx-mm/parser')
 
 install_headers(pub_header_top, install_dir : '/usr/include/imx-mm/parser')
 install_headers(pub_header_common, install_dir : '/usr/include/imx-mm/parser')
+install_headers(parser_lib_header_common, install_dir : '/usr/include/imx-mm/parser')
 
 subdir('src/parser_libs/id3_parser')
 subdir('src/parser_libs/audio_index_table')
@@ -46,3 +58,14 @@ subdir('src/mpg2_parser')
 subdir('src/ogg_parser')
 subdir('src/parser_test')
 subdir('src/spdif_parser')
+
+pkgconf = import('pkgconfig')
+
+pkgconf.generate(
+  name: 'imx-parser',
+  description: 'NXP i.MX parser',
+  version: '1.0.0',
+  subdirs: 'imx-mm/parser',
+  libraries: ['-limx-mm/parser/lib_h264_parser_arm_elinux', '-limx-mm/parser/lib_id3_parser_arm_elinux',],
+  install_dir: join_paths(get_option('libdir'), 'pkgconfig')
+)

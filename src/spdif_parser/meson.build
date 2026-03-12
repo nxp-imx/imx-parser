@@ -2,8 +2,8 @@
 src_list_cmd = run_command('sh', '-c', 'ls lib/src/*.c', check : true)
 srcs = files(src_list_cmd.stdout().strip().split())
 
-inc_pub  = include_directories('../../../ghdr/common')
-inc_pub_api  = include_directories('../../../ghdr')
+inc_pub  = include_directories('../../ghdr/common')
+inc_pub_api  = include_directories('../../ghdr')
 inc_priv = include_directories('lib/inc')
 
 lib_spdif = shared_library(
