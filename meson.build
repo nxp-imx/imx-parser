@@ -66,6 +66,6 @@ pkgconf.generate(
   description: 'NXP i.MX parser',
   version: '1.0.0',
   subdirs: 'imx-mm/parser',
-  libraries: ['-limx-mm/parser/lib_h264_parser_arm_elinux', '-limx-mm/parser/lib_id3_parser_arm_elinux',],
+  libraries: ['-L${libdir}/imx-mm/parser', '-l_h264_parser_arm_elinux', '-l_id3_parser_arm_elinux', ],
   install_dir: join_paths(get_option('libdir'), 'pkgconfig')
 )

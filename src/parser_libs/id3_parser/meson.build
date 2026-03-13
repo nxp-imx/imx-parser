@@ -11,6 +11,7 @@ lib_id3_parser = shared_library(
   srcs,
   include_directories : [inc_pub, inc_priv, inc_parser_libs],
   name_prefix         : 'lib_',
+  soversion           : '0.1',
   install             : true,
   install_dir         : [libs_install_dir],
 )
