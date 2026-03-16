@@ -34,11 +34,17 @@ parser_lib_header_common = [
 	'src/parser_libs/common/utils.h',
 ]
 
+spdif_parser_header = [
+  'src/spdif_parser/lib/inc/spdifparser_types.h',
+  'src/spdif_parser/lib/inc/spdifparser.h',
+]
+
 libs_install_dir = join_paths(get_option('libdir'), 'imx-mm/parser')
 
 install_headers(pub_header_top, install_dir : '/usr/include/imx-mm/parser')
 install_headers(pub_header_common, install_dir : '/usr/include/imx-mm/parser')
 install_headers(parser_lib_header_common, install_dir : '/usr/include/imx-mm/parser')
+install_headers(spdif_parser_header, install_dir : '/usr/include/imx-mm/parser')
 
 subdir('src/parser_libs/id3_parser')
 subdir('src/parser_libs/audio_index_table')
