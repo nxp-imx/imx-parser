@@ -1,7 +1,7 @@
 project(
   'imx-parser',
   'c',
-  version : '5.0.0',
+  version : '4.11.0',
   meson_version : '>=0.60.0',
   default_options : [
     'c_std=c11',
@@ -70,7 +70,7 @@ pkgconf = import('pkgconfig')
 pkgconf.generate(
   name: 'imx-parser',
   description: 'NXP i.MX parser',
-  version: '1.0.0',
+  version: meson.project_version(),
   subdirs: 'imx-mm/parser',
   libraries: ['-L${libdir}/imx-mm/parser', '-l_h264_parser_arm_elinux', '-l_id3_parser_arm_elinux', ],
   install_dir: join_paths(get_option('libdir'), 'pkgconfig')

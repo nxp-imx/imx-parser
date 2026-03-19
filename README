@@ -1,0 +1,8 @@
+This is source code NXP i.MX multimedia parser libraries
+including APE, AVI, DSF, FLV, MKV, MP3, MPG2, OGG, SPDIF parser
+Common API is declared in head file fsl_parser_api.h
+
+Head file installation directory:
+    /usr/include/imx-mm/parser
+Library installation directory:
+    /usr/lib/imx-mm/parser
