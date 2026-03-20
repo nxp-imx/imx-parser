@@ -40,6 +40,7 @@ spdif_parser_header = [
 ]
 
 libs_install_dir = join_paths(get_option('libdir'), 'imx-mm/parser')
+default_install_dir = get_option('libdir')
 
 install_headers(pub_header_top, install_dir : '/usr/include/imx-mm/parser')
 install_headers(pub_header_common, install_dir : '/usr/include/imx-mm/parser')
@@ -67,11 +68,12 @@ subdir('src/spdif_parser')
 
 pkgconf = import('pkgconfig')
 
+#imx-mp4-parser need to link h264 parser and id3 parser
 pkgconf.generate(
   name: 'imx-parser',
   description: 'NXP i.MX parser',
   version: meson.project_version(),
   subdirs: 'imx-mm/parser',
-  libraries: ['-L${libdir}/imx-mm/parser', '-l_h264_parser_arm_elinux', '-l_id3_parser_arm_elinux', ],
+  libraries: ['-l_h264_parser_arm_elinux', '-l_id3_parser_arm_elinux', ],
   install_dir: join_paths(get_option('libdir'), 'pkgconfig')
 )

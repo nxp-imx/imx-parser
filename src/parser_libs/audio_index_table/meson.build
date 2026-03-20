@@ -13,7 +13,7 @@ lib_audio_index_table = shared_library(
   name_prefix         : 'lib_',
   soversion           : '0.1',
   install             : true,
-  install_dir         : [libs_install_dir],
+  install_dir         : [default_install_dir],
 )
 
 audio_index_table_dep = declare_dependency(

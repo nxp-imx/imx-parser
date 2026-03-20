@@ -13,7 +13,7 @@ lib_id3_parser = shared_library(
   name_prefix         : 'lib_',
   soversion           : '0.1',
   install             : true,
-  install_dir         : [libs_install_dir],
+  install_dir         : [default_install_dir],
 )
 
 id3_parser_dep = declare_dependency(

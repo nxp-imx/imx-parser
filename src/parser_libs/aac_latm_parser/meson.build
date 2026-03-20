@@ -13,7 +13,7 @@ lib_aac_latm_parser = shared_library(
   name_prefix         : 'lib_',
   soversion           : '0.1',
   install             : true,
-  install_dir         : [libs_install_dir],
+  install_dir         : [default_install_dir],
 )
 
 aac_latm_parser_dep = declare_dependency(
