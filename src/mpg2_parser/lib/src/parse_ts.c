@@ -1023,25 +1023,21 @@ FSL_VOID ListSupportedStreams(FSL_MPG_DEMUX_CNXT_T* pCnxt) {
     U32 p, i, j, n;
     // keep consist with FSL_MPG_DEMUX_TS_STREAMS_T array member size, or memory access exception.
     U32 StreamPIDTemp[MAX_MPEG2_STREAMS];  // NO_PMTSECTION_SUPPORT_MAX*NO_STREAMSINPMT_SUPPORT_MAX];
-    U32 StreamTypeTemp
-            [MAX_MPEG2_STREAMS];  // NO_PMTSECTION_SUPPORT_MAX*NO_STREAMSINPMT_SUPPORT_MAX];
-
+    U32 StreamTypeTemp[MAX_MPEG2_STREAMS];  // NO_PMTSECTION_SUPPORT_MAX*NO_STREAMSINPMT_SUPPORT_MAX];
     n = 0;
     pCnxt->TSCnxt.Streams.SupportedStreams = 0;
 
     for (p = 0; p < pCnxt->TSCnxt.nPMTs; p++) {
-        for (i = 0; i < pCnxt->TSCnxt.PMT[p].Sections; i++) {
-            for (j = 0; j < pCnxt->TSCnxt.PMT[p].PMTSection[i].Streams; j++) {
-                if (IsSupportedStream((U32)pCnxt->TSCnxt.PMT[p].PMTSection[i].StreamType[j])) {
-                    // Cable_ch64.ts
-                    if (n >= MAX_MPEG2_STREAMS) {
-                        break;
-                    }
-                    StreamTypeTemp[n] = (U32)pCnxt->TSCnxt.PMT[p].PMTSection[i].StreamType[j];
-                    StreamPIDTemp[n] = (U32)pCnxt->TSCnxt.PMT[p].PMTSection[i].StreamPID[j];
-                    pCnxt->TSCnxt.PMT[p].SupportedStreamNum++;
-                    n++;
+        for (j = 0; j < pCnxt->TSCnxt.PMT[p].PMTSection[0].Streams; j++) {
+            if (IsSupportedStream((U32)pCnxt->TSCnxt.PMT[p].PMTSection[0].StreamType[j])) {
+                // Cable_ch64.ts
+                if (n >= MAX_MPEG2_STREAMS) {
+                    break;
                 }
+                StreamTypeTemp[n] = (U32)pCnxt->TSCnxt.PMT[p].PMTSection[0].StreamType[j];
+                StreamPIDTemp[n] = (U32)pCnxt->TSCnxt.PMT[p].PMTSection[0].StreamPID[j];
+                pCnxt->TSCnxt.PMT[p].SupportedStreamNum++;
+                n++;
             }
         }
     }

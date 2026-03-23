@@ -6729,7 +6729,7 @@ static int matroska_parse_block(MKVReaderContext* pctx, uint8* data, int size, u
         is_keyframe = flags & 0x80 ? PKT_FLAG_KEY : 0;
 
     if (cluster_time != (uint64)-1 && (block_time >= 0 || cluster_time >= (uint64)(-block_time))) {
-        timecode = cluster_time + block_time;
+        timecode = (uint64)((int64)cluster_time + block_time);
 
         if (track->track_type == MATROSKA_TRACK_TYPE_VIDEO ||
             track->track_type == MATROSKA_TRACK_TYPE_AUDIO) {
@@ -6841,7 +6841,7 @@ static int matroska_parse_block(MKVReaderContext* pctx, uint8* data, int size, u
                 }
                 data += vsize;
                 size -= vsize;
-                lace_size[n] = (int32)temp_num + lace_size[n - 1];
+                lace_size[n] = (uint32)temp_num + lace_size[n - 1];
                 total_size += lace_size[n];
                 n++;
             }

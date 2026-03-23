@@ -59,7 +59,7 @@ void LogOutput(char* fmt, ...) {
 
 #define SEPARATOR " "
 
-#define BASELINE_SHORT_NAME "MKVPARSER_02.00.00"
+#define BASELINE_SHORT_NAME "MKVPARSER_02.00.01"
 
 #ifdef __WINCE
 #define OS_NAME "_WINCE"
@@ -1820,7 +1820,10 @@ EXTERN int32 MkvGetFileNextSample(FslParserHandle parserHandle, uint32* trackNum
     if (retval == -1)
         return PARSER_ERR_INVALID_PARAMETER;
 
-    *trackNum = *trackNum - 1;
+    //internal track num starts from 1 while external track num starts from 0
+    if(*trackNum > 1)
+        *trackNum = *trackNum - 1;
+
     if (retval == PARSER_EOS) {
         if (dataSize)
             *dataSize = 0;
@@ -1845,7 +1848,9 @@ EXTERN int32 MkvGetFileNextSyncSample(FslParserHandle parserHandle, uint32 direc
     if (retval == -1)
         return PARSER_ERR_INVALID_PARAMETER;
 
-    *trackNum = *trackNum - 1;
+    //internal track num starts from 1 while external track num starts from 0
+    if(*trackNum > 1)
+        *trackNum = *trackNum - 1;
     if (retval == PARSER_EOS || retval == PARSER_BOS) {
         if (dataSize)
             *dataSize = 0;
@@ -2497,6 +2502,7 @@ EXTERN int32 FslParserQueryInterface(uint32 id, void** func) {
 #endif  // SUPPORT_MKV_DRM
         case PARSER_API_FLUSH_TRACK:
             *func = MkvFlushTrack;
+            break;
         default:
             break; /* no support for other API */
     }

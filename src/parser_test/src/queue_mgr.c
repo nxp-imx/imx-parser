@@ -436,7 +436,6 @@ int32 queue_unit_test() {
     HANDLE hQueue = NULL;
 
     BufferType* buffersOnHand = NULL;
-    uint32 bufferCount = 0;
     uint64 usTimeStamp = 0;
     uint64 usRefClock = 0;
     int32 playRate = 1;
@@ -486,7 +485,6 @@ int32 queue_unit_test() {
         usTimeStamp += PTS_STEP_IN_US;
         bufferSizeRequeted += BUFFER_SIZE_STEP;
 
-        bufferCount++;
     }
 
 #if 0

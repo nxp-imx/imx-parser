@@ -45,7 +45,7 @@ ParserOutputBufferOps g_outputBufferOps;
 /*--------------------------------- Version Information --------------------------------*/
 #define SEPARATOR " "
 
-#define BASELINE_SHORT_NAME "AVI_PARSER_04.00.00"
+#define BASELINE_SHORT_NAME "AVI_PARSER_04.00.01"
 
 #ifdef __WINCE
 #define OS_NAME "_WINCE"

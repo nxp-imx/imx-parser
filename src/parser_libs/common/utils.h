@@ -279,7 +279,7 @@ static __inline int get_ue_golomb(GetBitContext* gb) {
         return UE_GOLOMB_VLC_CODE[cache];
         ;
     } else {
-        int log = (av_log2(cache) << 1) - 31;
+        int log = ((int)av_log2(cache) << 1) - 31;
         cache >>= log;
         cache--;
         skip_nbits(gb, 32 - log);

@@ -688,21 +688,19 @@ int32 Mpeg2GetLanguage(FslParserHandle parserHandle, uint32 streamNum, uint8* th
         FSL_MPG_DEMUX_TS_CNXT_T* pTSCnxt = &pDemuxer->pDemuxContext->TSCnxt;
         U32 PID = pTSCnxt->Streams.ReorderedStreamPID[streamNum];
         U32 p;
-        S32 i, j;
+        S32 j;
         for (p = 0; p < pTSCnxt->nPMTs; p++) {
-            for (i = 0; i < pTSCnxt->PMT[p].Sections; i++) {
-                for (j = 0; j < pTSCnxt->PMT[p].PMTSection[i].Streams; j++) {
-                    if (pTSCnxt->PMT[p].PMTSection[i].StreamPID[j] == PID) {
-                        MPG2_PARSER_LOG("%s: stream: %d, PID: 0x%X, language: %s: \r\n",
-                                        __FUNCTION__, streamNum, PID,
-                                        pTSCnxt->PMT[p].PMTSection[i].Language[j]);
-                        if (0 != pTSCnxt->PMT[p].PMTSection[i].Language[j][0]) {
-                            memcpy(threeCharCode, pTSCnxt->PMT[p].PMTSection[i].Language[j],
-                                   LANGUAGE_VALID_SIZE);
-                            found = 1;
-                        } else {
-                            // no language is detected in PMT.
-                        }
+            for (j = 0; j < pTSCnxt->PMT[p].PMTSection[0].Streams; j++) {
+                if (pTSCnxt->PMT[p].PMTSection[0].StreamPID[j] == PID) {
+                    MPG2_PARSER_LOG("%s: stream: %d, PID: 0x%X, language: %s: \r\n",
+                                    __FUNCTION__, streamNum, PID,
+                                    pTSCnxt->PMT[p].PMTSection[0].Language[j]);
+                    if (0 != pTSCnxt->PMT[p].PMTSection[0].Language[j][0]) {
+                        memcpy(threeCharCode, pTSCnxt->PMT[p].PMTSection[0].Language[j],
+                                LANGUAGE_VALID_SIZE);
+                        found = 1;
+                    } else {
+                        // no language is detected in PMT.
                     }
                 }
             }

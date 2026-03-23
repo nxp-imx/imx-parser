@@ -230,8 +230,8 @@ int32 parseStreamFormat(StreamFormatPtr* outAtom, BaseAtomPtr proto, AviInputStr
                                 AVIMSG("Unknown audio format\n");
                                 break;
                         }
-                        break;
                     }
+                    break;
                 default:
                     AVIMSG("Unknown audio format\n");
                     break;

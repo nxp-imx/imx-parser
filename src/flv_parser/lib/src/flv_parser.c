@@ -691,7 +691,7 @@ __attribute__((unused))
 static int64 Int2dbl(int64 v) {
     double result = 0.0;
 
-    if ((uint64)(v + v) > ((uint64)0xFFE << 52)) {
+    if ((uint64)((uint64)v + (uint64)v) > ((uint64)0xFFE << 52)) {
 #ifdef _MSC_VER
         result = 0 / result;
 #else

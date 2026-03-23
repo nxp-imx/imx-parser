@@ -30,6 +30,7 @@
 #define H264_NALU_BAK_SIZE (1024 * 1024)
 #define H264_NALU_STARTCODE_SIZE 4
 
+__attribute__((unused))
 static __inline int H264Clip(int a, int amin, int amax) {
     if (a < amin)
         return amin;
@@ -506,7 +507,9 @@ static const uint8_t* H264DecodeNal(H264Parser* parser, const uint8_t* pInput, u
     h->nal_ref_idc = pInput[0] >> 5;
 
     pInput++;
-    len--;
+
+    if(len > 0)
+        len--;
 
     for (i = 0; i + 1 < len; i += 2) {
         if (pInput[i])
@@ -520,7 +523,7 @@ static const uint8_t* H264DecodeNal(H264Parser* parser, const uint8_t* pInput, u
         }
     }
 
-    if (i >= len - 1) {
+    if (i + 1 >= len) {
         *dst_len = len;
         *consumed = len + 1;
         return pInput;

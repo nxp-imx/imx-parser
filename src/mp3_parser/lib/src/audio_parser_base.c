@@ -205,7 +205,6 @@ int32 ParserThreeSegmentAudio(Audio_Parser_Base_t* pParserBase) {
     uint32 nReadLen = AUDIO_PARSER_READ_SIZE;
     uint32 nDataSize = (uint32)(pParserBase->nEndPoint - pParserBase->nBeginPoint);
     uint8* pTmpBuffer;
-    uint32 i;
     bool abnormalSize = FALSE;
     FslFileStream fileOps = pParserBase->fileOps;
     FslFileHandle sourceFileHandle = pParserBase->sourceFileHandle;
@@ -224,7 +223,7 @@ int32 ParserThreeSegmentAudio(Audio_Parser_Base_t* pParserBase) {
         return PARSER_INSUFFICIENT_MEMORY;
     }
 
-    for (i = 0;; i++) {
+    while (true) {
         if (nReadPointTmp + nReadLen > nDataSize) {
             nReadLen = nDataSize - nReadPointTmp;
         }
@@ -400,7 +399,6 @@ int32 ParserFindBeginPoint(Audio_Parser_Base_t* pParserBase) {
     uint32 nReadPointTmp = 0;
     uint32 nDataSize = (uint32)(pParserBase->nEndPoint - pParserBase->nBeginPoint);
     uint8* pTmpBuffer;
-    uint32 i;
 
     int32 tmp = pParserBase->fileOps.Seek(pParserBase->sourceFileHandle, pParserBase->nBeginPoint,
                                           SEEK_SET, pParserBase->appContext);
@@ -414,7 +412,7 @@ int32 ParserFindBeginPoint(Audio_Parser_Base_t* pParserBase) {
         return PARSER_INSUFFICIENT_MEMORY;
     }
 
-    for (i = 0;; i++) {
+    while (true) {
         if (nReadPointTmp + nReadLen > nDataSize) {
             nReadLen = nDataSize - nReadPointTmp;
         }
@@ -563,7 +561,6 @@ int32 ParserCalculateVBRDuration(Audio_Parser_Base_t* pParserBase) {
     int32 nActuralRead = 0;
     uint32 nDataSize = (uint32)(pParserBase->nEndPoint - pParserBase->nBeginPoint);
     uint32 nReadPointTmp = 0;
-    uint32 i;
 
     uint8* pTmpBuffer;
 
@@ -600,7 +597,7 @@ int32 ParserCalculateVBRDuration(Audio_Parser_Base_t* pParserBase) {
     pParserBase->minctr = 0;
     pParserBase->hourctr = 0;
 
-    for (i = 0;; i++) {
+    while (true) {
         if (nReadPointTmp + nReadLen > nDataSize) {
             nReadLen = nDataSize - nReadPointTmp;
         }

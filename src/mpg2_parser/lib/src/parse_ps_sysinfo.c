@@ -393,7 +393,7 @@ U32 ParseMPEG2VideoInfo(FSL_MPG_DEMUX_CNXT_T* pCnxt, FSL_MPG_DEMUX_VSHeader_T* p
     pVHeader->FRNumerator = 30;
     pVHeader->FRDenominator = 1;
 
-    if (FrameRateCode <= 8) {
+    if (FrameRateCode > 0 && FrameRateCode <= 8) {
         pVHeader->FRNumerator = MPEG_FrameRate[FrameRateCode - 1][0];
         pVHeader->FRDenominator = MPEG_FrameRate[FrameRateCode - 1][1];
     }
@@ -937,15 +937,13 @@ U32 ParseAC4AudioInfo(FSL_MPG_DEMUX_AHeader_T* pAHeader, U8* pBuf, int MaxLen) {
     bitOffset += 2;
     if (3 == version) {
         // readVariableBits
-        int value = 0, moreBits = 1;
+        int moreBits = 1;
         while (moreBits) {
-            value += getBits(pTemp, bitOffset, MaxLen - offset, 2);
+            getBits(pTemp, bitOffset, MaxLen - offset, 2);
             moreBits = getBits(pTemp, bitOffset + 2, MaxLen - offset, 1);
             bitOffset += 3;
             if (!moreBits)
                 break;
-            value++;
-            value <<= 2;
         }
     }
 

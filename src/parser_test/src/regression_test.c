@@ -882,7 +882,6 @@ uint8* appLocalRequestBuffer(uint32 streamNum, uint32* size, void** bufContext,
     Track* track = &tracks[streamNum];
     uint8* buffer;
     uint32 sizeRequested, sizeGot;
-    static uint32 dwCount;
 
 #ifdef DBG_CHECK_APP_CONTEXT
     if ((NULL == parserContext) || strcmp(appContext, (uint8*)parserContext)) {
@@ -903,8 +902,7 @@ uint8* appLocalRequestBuffer(uint32 streamNum, uint32* size, void** bufContext,
         return NULL;
     }
 
-    dwCount++;
-    sizeRequested = *size;  //(dwCount % 2 == 1) ? (10<<10) : *size; //10<<10; //
+    sizeRequested = *size;
     if (!sizeRequested) {
         sizeRequested = 8;
         logError(RISK_REQUEST_ZERO_SIZE_OUTPUT_BUFFER);
@@ -2933,15 +2931,15 @@ static FILE* g_fp;
 
 void SaveData(uint8* pbyData, uint32 dwLen) {
     static FILE* fp;
-    static uint32 dwSaveNum;
-    static uint32 dwSaveSize;
     int ret;
 
 #ifdef CONTROLSIZE
+    static uint32 dwSaveSize;
     if (dwSaveSize >= SAVESIZE) {
         return;
     }
 #else
+    static uint32 dwSaveNum;
     if (dwSaveNum >= SAVEFRM) {
         return;
     }
@@ -2965,15 +2963,16 @@ void SaveData(uint8* pbyData, uint32 dwLen) {
         return;
     }
 
-    dwSaveNum++;
-    dwSaveSize += dwLen;
 
 #ifdef CONTROLSIZE
+    dwSaveSize += dwLen;
     if (dwSaveSize >= SAVESIZE) {
         fclose(fp);
         printf("write data finished\r\n");
     }
 #else
+
+    dwSaveNum++;
     if (dwSaveNum >= SAVEFRM) {
         fclose(fp);
         printf("write data finished\r\n");
@@ -3095,7 +3094,6 @@ static void* parserTask(void* arg) {
     uint8* buffer;
     void* bufferContext;
     static uint8 adwSegCount[32];
-    static uint32 dwTotalCount;
 #ifdef TIME_PROFILE
 #if defined(__WINCE) || defined(WIN32)
     uint32 start_time;
@@ -3236,7 +3234,6 @@ static void* parserTask(void* arg) {
             if (err == 0)
                 adwSegCount[trackNum]++;
 
-            dwTotalCount++;
             bSave = 0;
 
             if ((err == 0) && buffer && (bufferContext == NULL)) {
@@ -5548,7 +5545,6 @@ bail:
     printf("Totally %d clips are tested and  %d clips failed. Last clip number is %d.\n",
            testedClipCount, g_failed_clip_count, g_current_clip_number);
     printf("Final ERROR CODE is %d\n", err);
-    getchar();
     return (int)err;
 }
 #endif
