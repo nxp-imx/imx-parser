@@ -1,40 +1,3 @@
-cc_defaults {
-    name: "imx_parser_libs_defaults",
-
-    cflags: [
-        "-Wno-unused-parameter",
-        "-Wno-implicit-fallthrough",
-        "-Werror",
-    ],
-
-    ldflags: ["-Wl,-Bsymbolic"],
-
-    include_dirs: [
-        "vendor/nxp-opensource/imx-parser/ghdr",
-        "vendor/nxp-opensource/imx-parser/ghdr/common",
-    ],
-
-    local_include_dirs: [
-        "inc",
-        "common",
-    ],
-
-    sanitize: {
-        misc_undefined: [
-            "signed-integer-overflow",
-            "unsigned-integer-overflow",
-            "bounds",
-        ],
-        diag: {
-            misc_undefined: [
-                "signed-integer-overflow",
-                "unsigned-integer-overflow",
-                "bounds",
-            ],
-        },
-    },
-}
-
 cc_library_static {
     name: "lib_h264_parser_arm11_elinux",
 
@@ -43,9 +6,8 @@ cc_library_static {
     ],
 
     defaults: [
-        "imx_parser_libs_defaults",
+        "imx_parser_defaults",
     ],
-
 }
 
 
@@ -57,7 +19,7 @@ cc_library_static {
     ],
 
     defaults: [
-        "imx_parser_libs_defaults",
+        "imx_parser_defaults",
     ],
 }
 
@@ -69,7 +31,7 @@ cc_library_static {
     ],
 
     defaults: [
-        "imx_parser_libs_defaults",
+        "imx_parser_defaults",
     ],
 }
 
@@ -86,7 +48,7 @@ cc_library_static {
     ],
 
     defaults: [
-        "imx_parser_libs_defaults",
+        "imx_parser_defaults",
     ],
 }
 
@@ -102,6 +64,6 @@ cc_library_static {
     ],
 
     defaults: [
-        "imx_parser_libs_defaults",
+        "imx_parser_defaults",
     ],
 }

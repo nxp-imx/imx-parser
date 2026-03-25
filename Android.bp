@@ -2,13 +2,15 @@ cc_defaults {
     name: "imx_parser_defaults",
 
     cflags: [
-        "-Wno-unused-parameter",
-        "-Wno-implicit-fallthrough",
+        "-Wall",
+        "-Wextra",
         "-Werror",
         "-Wno-date-time",
         "-Wno-error=date-time",
         "-DANDROID",
         "-DNDEBUG",
+        "-Wimplicit-fallthrough",
+        "-Werror=unused-variable",
     ],
 
     ldflags: ["-Wl,-Bsymbolic"],
@@ -18,6 +20,10 @@ cc_defaults {
         "vendor/nxp-opensource/imx-parser/ghdr/common",
         "vendor/nxp-opensource/imx-parser/src/parser_libs/inc",
         "vendor/nxp-opensource/imx-parser/src/parser_libs/common",
+    ],
+
+    shared_libs: [
+        "liblog",
     ],
 
     sanitize: {
