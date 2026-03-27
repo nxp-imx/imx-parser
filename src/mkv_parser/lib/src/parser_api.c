@@ -59,7 +59,7 @@ void LogOutput(char* fmt, ...) {
 
 #define SEPARATOR " "
 
-#define BASELINE_SHORT_NAME "MKVPARSER_02.00.01"
+#define BASELINE_SHORT_NAME "MKVPARSER_02.00.02"
 
 #ifdef __WINCE
 #define OS_NAME "_WINCE"
@@ -1821,7 +1821,7 @@ EXTERN int32 MkvGetFileNextSample(FslParserHandle parserHandle, uint32* trackNum
         return PARSER_ERR_INVALID_PARAMETER;
 
     //internal track num starts from 1 while external track num starts from 0
-    if(*trackNum > 1)
+    if(*trackNum > 0)
         *trackNum = *trackNum - 1;
 
     if (retval == PARSER_EOS) {
@@ -1849,7 +1849,7 @@ EXTERN int32 MkvGetFileNextSyncSample(FslParserHandle parserHandle, uint32 direc
         return PARSER_ERR_INVALID_PARAMETER;
 
     //internal track num starts from 1 while external track num starts from 0
-    if(*trackNum > 1)
+    if(*trackNum > 0)
         *trackNum = *trackNum - 1;
     if (retval == PARSER_EOS || retval == PARSER_BOS) {
         if (dataSize)
