@@ -210,7 +210,7 @@ void PrintTagSize(uint32 tag, uint32 size);
 #define fourcc(a, b, c, d) (((d) << 24) | ((c) << 16) | ((b) << 8) | (a))
 
 #define STREAM_NUM_FROM_TAG(fourcc) \
-    (((((fourcc) & 0xff) - '0') * 10) + ((((fourcc) & 0xff00) >> 8) - '0'))
+    ((((int32)((fourcc) & 0xff) - '0') * 10) + ((int32)(((fourcc) & 0xff00) >> 8) - '0'))
 
 // #define STREAM_NUM_FROM_TAG( fourcc)   (((((fourcc)&0xff) - '0')<<4)|((((fourcc)&0xff00)>>8) -
 // '0')) #define NUM_FROM_IDX1_TAG( fourcc)    ((((((fourcc)&0xff0000)>>16) -

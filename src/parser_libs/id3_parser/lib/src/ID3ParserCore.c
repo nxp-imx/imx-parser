@@ -656,12 +656,21 @@ void FetchFrameVal(Iterator* self, char** id, bool otherdata) {
         return;
     }
 
+    if (self->mFrameSize < GetHeadSize(self) + 1) {
+        return;
+    }
+
     n = self->mFrameSize - GetHeadSize(self) - 1;
     if (otherdata) {
-        uint32 i = n - 4;
+        uint32 i;
         int skipped;
         const uint8* framedata = (const uint8*)self->mFrameData;
 
+        if (n < 5) {
+            return;
+        }
+
+        i = n - 4;
         framedata += 4;
         do {
             framedata++;

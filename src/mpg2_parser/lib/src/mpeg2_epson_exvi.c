@@ -20,7 +20,7 @@ bool EPSON_ReadEXVI(unsigned char* pAddr, uint32 length,
     unsigned int uiPES_Length;
     unsigned int len = 0;
 
-    while (len <= length - 16) {
+    while (len + 16 <= length) {
         if (len >= PES_MAX_HEADER_LEN)
             return FALSE;
         if (!(('E' == pAddr[0]) && ('X' == pAddr[1]) && ('V' == pAddr[2]) && ('I' == pAddr[3]))) {
@@ -29,7 +29,7 @@ bool EPSON_ReadEXVI(unsigned char* pAddr, uint32 length,
         } else
             break;
     }
-    if (len > length - 16)
+    if (len + 16 > length)
         return FALSE;
 
     usWidth = ((unsigned short)pAddr[4] << 5) | (unsigned short)(pAddr[5] & 0xFC) >> 3;

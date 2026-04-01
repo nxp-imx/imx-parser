@@ -245,7 +245,7 @@ int32 ParserThreeSegmentAudio(Audio_Parser_Base_t* pParserBase) {
         }
 
         if (nReadPointTmp2 >= AUDIO_PARSER_SEGMENT_SIZE) {
-            int32 nSkip = (nDataSize - 3 * AUDIO_PARSER_SEGMENT_SIZE) / 2;
+            int32 nSkip = ((int32)nDataSize - 3 * AUDIO_PARSER_SEGMENT_SIZE) / 2;
             if (pParserBase->nEndPoint == MAX_VALUE_UINT64) {
                 abnormalSize = TRUE;
                 nSkip = 3 * AUDIO_PARSER_SEGMENT_SIZE;

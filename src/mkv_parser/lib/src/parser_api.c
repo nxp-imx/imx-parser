@@ -59,7 +59,7 @@ void LogOutput(char* fmt, ...) {
 
 #define SEPARATOR " "
 
-#define BASELINE_SHORT_NAME "MKVPARSER_02.00.02"
+#define BASELINE_SHORT_NAME "MKVPARSER_02.00.03"
 
 #ifdef __WINCE
 #define OS_NAME "_WINCE"
@@ -79,6 +79,14 @@ void LogOutput(char* fmt, ...) {
 #define PARSER_VERSION_STR                                                                 \
     (BASELINE_SHORT_NAME OS_NAME CODEC_RELEASE_TYPE SEPARATOR VERSION_STR_SUFFIX SEPARATOR \
      "build on" SEPARATOR __DATE__ SEPARATOR __TIME__)
+
+static inline uint64 mkv_calc_timestamp_us(uint64 pts, unsigned int time_code_scale) {
+    if (pts == MKV_NOPTS_VALUE)
+        return 0;
+    if (time_code_scale > 0)
+        return pts * time_code_scale / 1000;
+    return pts * 1000;
+}
 
 typedef void mkv_parser;
 
@@ -558,11 +566,8 @@ int mkv_parser_next_sample(mkv_parser* parser, uint32 trackNum, uint8** sampleDa
     memcpy(*sampleData, track->packet.data + track->data_offset, data_size);
 
     *sampleSize = data_size;
-    if (pctx->sctx.info.time_code_scale > 0)
-        *usStartTime = track->packet.pts * pctx->sctx.info.time_code_scale / 1000;
-    else
-        *usStartTime = track->packet.pts * 1000;
-    *usDuration = track->packet.duration * 1000;
+    *usStartTime = mkv_calc_timestamp_us(track->packet.pts, pctx->sctx.info.time_code_scale);
+    *usDuration = mkv_calc_timestamp_us(track->packet.duration, 0);
     *flag = track->packet.flags;
     *bufferContext = output_buf_context;
 
@@ -763,11 +768,8 @@ int mkv_parser_file_next_sample(mkv_parser* parser, uint32* trackNum, uint8** sa
     memcpy(*sampleData, track->packet.data + track->data_offset, data_size);
 
     *sampleSize = data_size;
-    if (pctx->sctx.info.time_code_scale > 0)
-        *usStartTime = track->packet.pts * pctx->sctx.info.time_code_scale / 1000;
-    else
-        *usStartTime = track->packet.pts * 1000;
-    *usDuration = track->packet.duration * 1000;
+    *usStartTime = mkv_calc_timestamp_us(track->packet.pts, pctx->sctx.info.time_code_scale);
+    *usDuration = mkv_calc_timestamp_us(track->packet.duration, 0);
     *flag = track->packet.flags;
     *bufferContext = output_buf_context;
 
@@ -930,11 +932,8 @@ int mkv_parser_get_sync_sample(mkv_parser* parser, uint32 direction, uint32 trac
     memcpy(*sampleData, track->packet.data + track->data_offset, data_size);
 
     *sampleSize = data_size;
-    if (pctx->sctx.info.time_code_scale > 0)
-        *usStartTime = track->packet.pts * pctx->sctx.info.time_code_scale / 1000;
-    else
-        *usStartTime = track->packet.pts * 1000;
-    *usDuration = track->packet.duration * 1000;
+    *usStartTime = mkv_calc_timestamp_us(track->packet.pts, pctx->sctx.info.time_code_scale);
+    *usDuration = mkv_calc_timestamp_us(track->packet.duration, 0);
     *flag = track->packet.flags;
     *bufferContext = output_buf_context;
 
@@ -1082,11 +1081,8 @@ int mkv_parser_get_file_next_sync_sample(mkv_parser* parser, uint32 direction, u
     memcpy(*sampleData, track->packet.data + track->data_offset, data_size);
 
     *sampleSize = data_size;
-    if (pctx->sctx.info.time_code_scale > 0)
-        *usStartTime = track->packet.pts * pctx->sctx.info.time_code_scale / 1000;
-    else
-        *usStartTime = track->packet.pts * 1000;
-    *usDuration = track->packet.duration * 1000;
+    *usStartTime = mkv_calc_timestamp_us(track->packet.pts, pctx->sctx.info.time_code_scale);
+    *usDuration = mkv_calc_timestamp_us(track->packet.duration, 0);
     *flag = track->packet.flags;
     *bufferContext = output_buf_context;
 

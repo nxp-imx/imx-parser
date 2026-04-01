@@ -4049,7 +4049,10 @@ MPEG2_PARSER_ERROR_CODE Mpeg2SeekStream(MPEG2ObjectPtr pDemuxer, uint32 streamNu
 
     if (topFound && bottomFound) {
         if (flag == SEEK_FLAG_NEAREST) {
-            if (*usTime - topPTS < bottomPTS - *usTime) {
+            /* Use signed comparison to avoid unsigned integer overflow */
+            U64 diffTop = (*usTime >= topPTS) ? (*usTime - topPTS) : (topPTS - *usTime);
+            U64 diffBottom = (bottomPTS >= *usTime) ? (bottomPTS - *usTime) : (*usTime - bottomPTS);
+            if (diffTop < diffBottom) {
                 foundOffset = topOffset;
                 *usTime = topPTS;
             } else {

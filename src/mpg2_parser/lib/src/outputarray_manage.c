@@ -47,16 +47,16 @@ MPEG2_PARSER_ERROR_CODE ReallocUnits(ParserMemoryOps* pMemOps, OutputBufArray* p
         return PARSER_INSUFFICIENT_MEMORY;
 
     if (pOldLinkMem != pOutputBufArray->pLinkMem) {
-        unsigned long diff = (unsigned long)pOutputBufArray->pLinkMem - (unsigned long)pOldLinkMem;
-        pOutputBufArray->pHead = (OutputBufLink*)((unsigned long)pOutputBufArray->pHead + diff);
-        pOutputBufArray->pTail = (OutputBufLink*)((unsigned long)pOutputBufArray->pTail + diff);
+        int64 diff = (int64)pOutputBufArray->pLinkMem - (int64)pOldLinkMem;
+        pOutputBufArray->pHead = (OutputBufLink*)((int64)pOutputBufArray->pHead + diff);
+        pOutputBufArray->pTail = (OutputBufLink*)((int64)pOutputBufArray->pTail + diff);
         if (pOutputBufArray->validCount != 0)
             pOutputBufArray->pValidTail =
-                    (OutputBufLink*)((unsigned long)pOutputBufArray->pValidTail + diff);
+                    (OutputBufLink*)((int64)pOutputBufArray->pValidTail + diff);
         for (i = 0; i < count; i++) {
             pHead = &((OutputBufLink*)pOutputBufArray->pLinkMem)[i];
             if (pHead->pNextUnit != NULL)
-                pHead->pNextUnit = (OutputBufLink*)((unsigned long)pHead->pNextUnit + diff);
+                pHead->pNextUnit = (OutputBufLink*)((int64)pHead->pNextUnit + diff);
         }
 
         /*

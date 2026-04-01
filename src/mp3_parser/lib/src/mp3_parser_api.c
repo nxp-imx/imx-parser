@@ -19,7 +19,7 @@
 #define OS_NAME ""
 #endif
 
-#define BASELINE_SHORT_NAME "MP3PARSER_04.00.00"
+#define BASELINE_SHORT_NAME "MP3PARSER_04.00.01"
 
 #define SEPARATOR " "
 /* user define suffix */

@@ -45,7 +45,7 @@ ParserOutputBufferOps g_outputBufferOps;
 /*--------------------------------- Version Information --------------------------------*/
 #define SEPARATOR " "
 
-#define BASELINE_SHORT_NAME "AVI_PARSER_04.00.01"
+#define BASELINE_SHORT_NAME "AVI_PARSER_04.00.02"
 
 #ifdef __WINCE
 #define OS_NAME "_WINCE"
@@ -2774,7 +2774,7 @@ static int32 parseHeader(FslFileHandle parserHandle) {
                     stream->bytesPerSec = 1;
                 AVIMSG("CBR audio, average byte rate: %d\n", stream->bytesPerSec);
                 if (strh->rate)
-                    stream->usFixedSampleDuration = (strh->scale * 1000 / strh->rate * 1000);
+                    stream->usFixedSampleDuration = ((uint64)strh->scale * 1000 / strh->rate * 1000);
             }
         }
 
@@ -2878,13 +2878,13 @@ static void verifyTrackDuation(FslFileHandle parserHandle) {
             } else if (stream->usDuration != usTrackDuation) {
                 int64 usTrackDuraitonGap;
 
-                usTrackDuraitonGap = (int64)(usTrackDuation - stream->usDuration);
+                usTrackDuraitonGap = (int64)usTrackDuation - (int64)stream->usDuration;
                 AVIMSG("trk %d, duration difference: %lld\n", i, usTrackDuraitonGap);
                 if ((usTrackDuraitonGap > (0 - DURATION_ERROR_SCOPE)) &&
                     (usTrackDuraitonGap < DURATION_ERROR_SCOPE))
                     AVIMSG("trk %d, duration difference is reasonible\n", i);
                 else {
-                    usTrackDuraitonGap = (int64)(stream->usDuration - primaryStream->usDuration);
+                    usTrackDuraitonGap = (int64)stream->usDuration - (int64)primaryStream->usDuration;
                     AVIMSG("trk %d, duration difference from primary trk: %lld\n", i,
                            usTrackDuraitonGap);
                     if ((usTrackDuraitonGap > (0 - DURATION_ERROR_SCOPE)) &&

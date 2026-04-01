@@ -273,7 +273,8 @@ int read_stream_buffer(ByteStream* pbs, char** pptr, int size) {
                 read_size = CacheRead(pbs->m_pTStreamCache, pbs->currpos, (pbs->pbuffer + bytes),
                                       read_size);
 
-                pbs->currpos += read_size;
+                if (read_size > 0)
+                    pbs->currpos += read_size;
             }
         }
 #ifdef STREAM_IO_STAT

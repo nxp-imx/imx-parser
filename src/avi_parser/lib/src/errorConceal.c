@@ -116,19 +116,13 @@ int32 AviSearchNextSample(AviObjectPtr aviObj, AVStreamPtr stream, uint32 scope)
     while ((0 < bytesLeft) && !sampleFound) {
         bytesToRead = (TRACK_CACHE_SIZE < bytesLeft) ? TRACK_CACHE_SIZE : bytesLeft;
         bytesGot = LocalFileRead(inputStream, cache, bytesToRead, appContext);
-        bytesLeft -= bytesGot;
 
-#if 0
-        if(0 < bytesGot)
-        {
-            stream->fileOffset += bytesGot; /* may exceeds the end of movie (moviEnd) */
-        }
-#endif
-
-        if (RIFF_HEADER_SIZE > bytesGot) {
+        if (RIFF_HEADER_SIZE > bytesGot || (uint32)bytesGot > bytesToRead) {
             AVIERRMSG(" No valid sample found till the end of the movie\n");
             BAILWITHERROR(PARSER_READ_ERROR)
         }
+
+        bytesLeft -= bytesGot;
 
         for (i = 0; i < bytesGot; i++) {
             val8 = *(cache + i);

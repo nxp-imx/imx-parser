@@ -277,14 +277,15 @@ static __inline int get_ue_golomb(GetBitContext* gb) {
         cache >>= 32 - 9;
         skip_nbits(gb, GOLOMB_VLC_LEN[cache]);
         return UE_GOLOMB_VLC_CODE[cache];
-        ;
     } else {
         int log = ((int)av_log2(cache) << 1) - 31;
-        cache >>= log;
-        cache--;
         skip_nbits(gb, 32 - log);
+        cache >>= log;
 
-        return cache;
+        if (cache > 0)
+            return --cache;
+        else
+            return -1;
     }
 }
 
@@ -315,11 +316,9 @@ static __inline int get_se_golomb(GetBitContext* gb) {
         skip_nbits(gb, 32 - log);
 
         if (cache & 1)
-            cache = -(cache >> 1);
+            return -((int)(cache >> 1));
         else
-            cache = (cache >> 1);
-
-        return cache;
+            return cache >> 1;
     }
 }
 

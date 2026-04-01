@@ -691,7 +691,10 @@ __attribute__((unused))
 static int64 Int2dbl(int64 v) {
     double result = 0.0;
 
-    if ((uint64)((uint64)v + (uint64)v) > ((uint64)0xFFE << 52)) {
+    // Avoid unsigned overflow in doubling check
+    uint64 uv = (uint64)v;
+    uint64 thresh = ((uint64)0xFFE) << 52;
+    if (uv > (thresh / 2)) {
 #ifdef _MSC_VER
         result = 0 / result;
 #else
@@ -706,7 +709,9 @@ static int64 Int2dbl(int64 v) {
 static double Getdbl(int64 v) {
     double result = 0.0;
 
-    if ((uint64)(v + v) > ((uint64)0xFFE << 52)) {
+    uint64 uv = (uint64)v;
+    uint64 thresh = ((uint64)0xFFE) << 52;
+    if (uv > (thresh / 2)) {
 #ifdef _MSC_VER
         result = 0 / result;
 #else
@@ -2620,8 +2625,11 @@ START_SAMPLE:
 #endif
                 }
                 if ((flags & 0xf) == FLV_CODECID_H264) {
-                    uint32 tmp =
-                            n_stream_read_be32(s);  // AVCPacketType(UI8) + CompositionTime(UI24)
+                    uint32 tmp;
+                    if (data_size < 4) {
+                        goto START_SAMPLE;
+                    }
+                    tmp = n_stream_read_be32(s);  // AVCPacketType(UI8) + CompositionTime(UI24)
                     data_size -= 4;
                     switch ((tmp & 0xff000000) >> 24) {
                         case AVC_SEQUENCE_HEADER: {
@@ -3037,7 +3045,10 @@ static FLVPARSER_ERR_CODE flv_parser_find_audio_tag_after_offset(flv_parser_t* p
                 p_flv_parser->auds_first_sample = 1;
             }
 
-            p_flv_parser->auds_timestamp = t.timestamp - p_flv_parser->timestamp_base;
+            if (t.timestamp > p_flv_parser->timestamp_base)
+                p_flv_parser->auds_timestamp = t.timestamp - p_flv_parser->timestamp_base;
+            else
+                p_flv_parser->auds_timestamp = 0;
             found = 1;
             msg_dbg("auds offset %d timstamp %d", tag_start_pos, t.timestamp);
         }

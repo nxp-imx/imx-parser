@@ -662,7 +662,7 @@ vint read_vint_val_size(void* ptr, int* psize) {
     return read_vint_value(p, vsize);
 }
 
-vint read_svint_val_size(void* ptr, int* psize) {
+svint read_svint_val_size(void* ptr, int* psize) {
     int n = 0;
     vint vval = 0;
 
@@ -673,9 +673,7 @@ vint read_svint_val_size(void* ptr, int* psize) {
 
     n = *psize;
 
-    vval = vval - (((uint64)1 << (7 * n - 1)) - 1);
-
-    return vval;
+    return ((svint)vval - ((1LL << (7 * n - 1)) - 1));
 }
 
 static uint64 ebml_unknown_length[8] = {
@@ -3082,7 +3080,7 @@ int read_segment_prescan_cluster_index_list(MKVReaderContext* pctx) {
     while ((length > 0) && (total_clusterid_cnt < max_cluster)) {
         bytes = read_stream_ebml_info(pbs, offset, &einfo);
 
-        if (!bytes || length < bytes) {
+        if (bytes <= 0 || length < bytes) {
             MKV_ERROR_LOG("read_cluser_index failed \r\n");
             goto FINISH_READ_CLUSTER;
         }
@@ -3127,7 +3125,7 @@ FINISH_READ_CLUSTER:
 #endif
 
 int read_matroska_segment_header(MKVReaderContext* pctx) {
-    int64 bytes = 0;
+    int64 bytes = 0, segment_size = 0;
     ebml_info einfo;
     ByteStream* pbs = NULL;
 
@@ -3146,6 +3144,8 @@ int read_matroska_segment_header(MKVReaderContext* pctx) {
         MKV_ERROR_LOG("read_matroska_segment_header : invalid segment master ID .\n");
         return -1;
     }
+
+    __builtin_sub_overflow(bytes, einfo.s_offset, &segment_size);
 
     pctx->segm_header_size = bytes;
     pctx->segm_master_size = einfo.s_offset;
@@ -3174,7 +3174,7 @@ int read_matroska_segment_header(MKVReaderContext* pctx) {
     pctx->sctx.prescan_cluster_index_list = NULL;
     pctx->sctx.prescan_cluster_index_count = 0;
     pctx->sctx.prescan_segment_offset = pctx->ebml_header_size + pctx->segm_master_size;
-    pctx->sctx.prescan_segment_size = bytes - einfo.s_offset;
+    pctx->sctx.prescan_segment_size = segment_size;
     pctx->sctx.prescan_cluster_interval = CLUSTER_INTERVAL;
     pctx->sctx.prescan_cluster_maxcnt = MAX_CLUSTER_CNT;
     pctx->sctx.prescan_cluster_totalcnt = 0;
@@ -3188,7 +3188,7 @@ int read_matroska_segment_header(MKVReaderContext* pctx) {
     pctx->sctx.has_cue = FALSE;
     pctx->sctx.cue_parsed = FALSE;
 
-    return read_segment_master_header(pctx, pctx->segment_start, bytes - einfo.s_offset);
+    return read_segment_master_header(pctx, pctx->segment_start, segment_size);
 }
 
 uint32 InitGetBits(BitsCtx* p, uint8* buf, uint32 size) {
@@ -3226,7 +3226,8 @@ uint32 GetBits(BitsCtx* p, uint32 n) {
     uint32 bitcnt = p->bitcnt;
     uint32 bit_a = p->buf_a;
 
-    nbit = (n + bitcnt) - 32;
+    if (n + bitcnt > 32)
+        nbit = (n + bitcnt) - 32;
 
     if (nbit <= 0) {
         out = (bit_a << bitcnt >> (32 - n));
@@ -3336,7 +3337,7 @@ static void matroska_execute_seekhead(MKVReaderContext* pctx) {
     uint64 offset, before_pos = get_stream_position(pbs);
 
     for (i = 0; i < seek_count; i++) {
-        offset = seek_list[i].seekpos + segment_start;
+        __builtin_add_overflow(seek_list[i].seekpos, segment_start, &offset);
 
         if (seek_list[i].seekpos <= before_pos || seek_list[i].seekid == MATROSKA_ID_SEEKHEAD ||
             seek_list[i].seekid == MATROSKA_ID_CLUSTER)
@@ -6293,7 +6294,8 @@ static int matroska_process_packet(MKVReaderContext* pctx, mkv_packet* packet) {
             memcpy(ptr, packet->data + 1, packet->size - 1);
 
             SWAP_32(segment_number);
-            while (segment_number--) {
+            while (segment_number > 0) {
+                segment_number--;
                 isvalid = *(uint32*)ptr;
                 SWAP_32(isvalid);
                 *(uint32*)ptr = isvalid;
@@ -6841,7 +6843,7 @@ static int matroska_parse_block(MKVReaderContext* pctx, uint8* data, int size, u
                 }
                 data += vsize;
                 size -= vsize;
-                lace_size[n] = (uint32)temp_num + lace_size[n - 1];
+                lace_size[n] = (uint32)(temp_num + (int64)lace_size[n - 1]);
                 total_size += lace_size[n];
                 n++;
             }

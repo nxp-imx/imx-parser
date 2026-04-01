@@ -32,12 +32,5 @@ cc_defaults {
             "unsigned-integer-overflow",
             "bounds",
         ],
-        diag: {
-            misc_undefined: [
-                "signed-integer-overflow",
-                "unsigned-integer-overflow",
-                "bounds",
-            ],
-        },
     },
 }
