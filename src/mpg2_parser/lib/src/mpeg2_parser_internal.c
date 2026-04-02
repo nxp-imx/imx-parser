@@ -265,7 +265,7 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserInitialIndex(MPEG2ObjectPtr pDemuxer, uint32 
     pIndex->version = 2;
     pIndex->dwTrackIdx = i;
     pIndex->status = 0;
-    pIndex->offsetbytes = (pDemuxer->fileSize > (uint64)0x7FFFFFFF ? 8 : 4);
+    pIndex->offsetbytes = sizeof(uint64);
     memset(pIndex->reserved, 0, 12 * sizeof(uint8));
     pIndex->period = 500;  // set period
     pIndex->itemcount = (pDemuxer->usLongestStreamDuration + 999) / 1000 / pIndex->period;
@@ -297,8 +297,7 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserInitialIndex(MPEG2ObjectPtr pDemuxer, uint32 
 
 MPEG2_PARSER_ERROR_CODE Mpeg2ParserUpdateIndex(MPEG2ObjectPtr pDemuxer, U32 dwTrackIdx, U64 offset,
                                                U64 PTS) {
-    U32* pindex4 = (U32*)pDemuxer->index[dwTrackIdx].pItem;
-    U64* pindex8 = (U64*)pDemuxer->index[dwTrackIdx].pItem;
+    U64* pItem = (U64*)pDemuxer->index[dwTrackIdx].pItem;
     U32 itemCount;
 
     if (NULL == pDemuxer->index[dwTrackIdx].pItem || 0 == pDemuxer->index[dwTrackIdx].itemcount)
@@ -312,25 +311,13 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserUpdateIndex(MPEG2ObjectPtr pDemuxer, U32 dwTr
         itemCount = pDemuxer->index[dwTrackIdx].itemcount - 1;  // return
                                                                 // MPEG2_ERR_INDEX_OUTOFRANGE?
 
-    if (pDemuxer->index[dwTrackIdx].offsetbytes == 4) {
-        if (pindex4[itemCount] == (uint32)INDEX_NOSCANNED) {
-            pindex4[itemCount] = (uint32)offset;
+    if (pItem[itemCount] == (U64)INDEX_NOSCANNED) {
+        pItem[itemCount] = offset;
+        pDemuxer->index[dwTrackIdx].pts[itemCount] = PTS;
+    } else if (itemCount == pDemuxer->index[dwTrackIdx].itemcount - 1) {
+        if (offset > pItem[itemCount]) {
+            pItem[itemCount] = offset;
             pDemuxer->index[dwTrackIdx].pts[itemCount] = PTS;
-        } else if (itemCount == pDemuxer->index[dwTrackIdx].itemcount - 1) {
-            if (offset > pindex4[itemCount]) {
-                pindex4[itemCount] = (uint32)offset;
-                pDemuxer->index[dwTrackIdx].pts[itemCount] = PTS;
-            }
-        }
-    } else {
-        if (pindex8[itemCount] == (U64)INDEX_NOSCANNED) {
-            pindex8[itemCount] = offset;
-            pDemuxer->index[dwTrackIdx].pts[itemCount] = PTS;
-        } else if (itemCount == pDemuxer->index[dwTrackIdx].itemcount - 1) {
-            if (offset > pindex8[itemCount]) {
-                pindex8[itemCount] = offset;
-                pDemuxer->index[dwTrackIdx].pts[itemCount] = PTS;
-            }
         }
     }
 
@@ -346,8 +333,7 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserQueryIndex(MPEG2ObjectPtr pDemuxer, uint32 dw
     static int deadloop_cnt = 0;
 #endif
 
-    uint32* pindex4 = (uint32*)pDemuxer->index[dwTrackIdx].pItem;
-    uint64* pindex8 = (uint64*)pDemuxer->index[dwTrackIdx].pItem;
+    uint64* pItem = (uint64*)pDemuxer->index[dwTrackIdx].pItem;
     uint32 item = 0;
     MPEG2_Index* pIndex = &(pDemuxer->index[dwTrackIdx]);
 
@@ -384,18 +370,12 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserQueryIndex(MPEG2ObjectPtr pDemuxer, uint32 dw
         pIndex->lastdir = direction;
     }
 #endif
-    bool is4bytes = pIndex->offsetbytes == 4;
 
     switch (direction) {
-        case 0:
-            *pOffset = is4bytes ? (int64)pindex4[item] : (int64)pindex8[item];
-            return PARSER_SUCCESS;
-            break;
-        case 1:
+        case FLAG_FORWARD:
             while (item < pIndex->itemcount) {
                 if (item == (U32)pIndex->lastQueriedFWItem ||
-                    (is4bytes && pindex4[item] == (uint32)INDEX_NOSCANNED) ||
-                    (!is4bytes && pindex8[item] == (uint64)INDEX_NOSCANNED)) {
+                    pItem[item] == (uint64)INDEX_NOSCANNED) {
                     item++;
                 } else
                     break;
@@ -409,7 +389,7 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserQueryIndex(MPEG2ObjectPtr pDemuxer, uint32 dw
                 return PARSER_EOS;
             }
 
-            *pOffset = is4bytes ? (uint64)pindex4[item] : (uint64)pindex8[item];
+            *pOffset = pItem[item];
             if (isIndexRangeContinuous(pDemuxer->pIndexRange, pDemuxer->fileOffset, *pOffset)) {
                 pIndex->lastQueriedFWItem = item;
                 pIndex->forwardPTS = pIndex->pts[item];
@@ -418,11 +398,10 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserQueryIndex(MPEG2ObjectPtr pDemuxer, uint32 dw
                 *pOffset = INDEX_NOSCANNED;
                 return MPEG2_ERR_CORRUPTED_INDEX;
             }
-        case 2:
-            while (item > 0) {
+        case FLAG_BACKWARD:
+            while (TRUE) {
                 if (item >= (U32)pIndex->lastQueriedRWItem ||
-                    (is4bytes && pindex4[item] == (uint32)INDEX_NOSCANNED) ||
-                    (!is4bytes && pindex8[item] == (uint64)INDEX_NOSCANNED)) {
+                    pItem[item] == (uint64)INDEX_NOSCANNED) {
                     if (0 == item) {
                         *pOffset = INDEX_NOSCANNED;
                         return PARSER_BOS;
@@ -432,7 +411,8 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserQueryIndex(MPEG2ObjectPtr pDemuxer, uint32 dw
                     break;
             }
 
-            *pOffset = is4bytes ? (uint64)pindex4[item] : (uint64)pindex8[item];
+
+            *pOffset = pItem[item];
             if (isIndexRangeContinuous(pDemuxer->pIndexRange, *pOffset, pDemuxer->fileOffset)) {
                 pIndex->lastQueriedRWItem = item;
                 pIndex->rewardPTS = pIndex->pts[item];
@@ -457,8 +437,7 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserQueryIndexRange(MPEG2ObjectPtr pDemuxer, uint
 
     int32 item = (PTS + 999) / 1000 / pDemuxer->index[dwTrackIdx].period;
     int32 i;
-    uint32* pindex4 = (uint32*)pDemuxer->index[dwTrackIdx].pItem;
-    uint64* pindex8 = (uint64*)pDemuxer->index[dwTrackIdx].pItem;
+    uint64* pItem = (uint64*)pDemuxer->index[dwTrackIdx].pItem;
 
     if (0 == pDemuxer->index[dwTrackIdx].itemcount)
         return MPEG2_ERR_EMPTY_INDEX;
@@ -470,29 +449,17 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserQueryIndexRange(MPEG2ObjectPtr pDemuxer, uint
         item = pDemuxer->index[dwTrackIdx].itemcount - 1;
 
     if (pDemuxer->index[dwTrackIdx].pts[item] == PTS) {
-        if (pDemuxer->index[dwTrackIdx].offsetbytes == 4 &&
-            pindex4[item] != (uint32)INDEX_NOSCANNED) {
+        if (pItem[item] != (uint64)INDEX_NOSCANNED) {
             pItems[1] = item;
-            pOffsets[1] = (uint64)pindex4[item];
-        } else if (pDemuxer->index[dwTrackIdx].offsetbytes == 8 &&
-                   pindex8[item] != (uint64)INDEX_NOSCANNED) {
-            pItems[1] = item;
-            pOffsets[1] = pindex8[item];
+            pOffsets[1] = pItem[item];
         }
     }
 
     i = item;
     while (i >= 0) {
-        if (pDemuxer->index[dwTrackIdx].offsetbytes == 4 && pindex4[i] != (uint32)INDEX_NOSCANNED &&
-            pDemuxer->index[dwTrackIdx].pts[i] < PTS) {
+        if (pItem[i] != (uint64)INDEX_NOSCANNED && pDemuxer->index[dwTrackIdx].pts[i] < PTS) {
             pItems[0] = i;
-            pOffsets[0] = (uint64)pindex4[i];
-            break;
-        } else if (pDemuxer->index[dwTrackIdx].offsetbytes == 8 &&
-                   pindex8[i] != (uint64)INDEX_NOSCANNED &&
-                   pDemuxer->index[dwTrackIdx].pts[i] < PTS) {
-            pItems[0] = i;
-            pOffsets[0] = pindex8[i];
+            pOffsets[0] = pItem[i];
             break;
         }
         i--;
@@ -500,16 +467,9 @@ MPEG2_PARSER_ERROR_CODE Mpeg2ParserQueryIndexRange(MPEG2ObjectPtr pDemuxer, uint
 
     i = item;
     while ((U32)i <= pDemuxer->index[dwTrackIdx].itemcount - 1) {
-        if (pDemuxer->index[dwTrackIdx].offsetbytes == 4 && pindex4[i] != (uint32)INDEX_NOSCANNED &&
-            pDemuxer->index[dwTrackIdx].pts[i] > PTS) {
+        if (pItem[i] != (uint64)INDEX_NOSCANNED && pDemuxer->index[dwTrackIdx].pts[i] > PTS) {
             pItems[2] = i;
-            pOffsets[2] = (uint64)pindex4[i];
-            break;
-        } else if (pDemuxer->index[dwTrackIdx].offsetbytes == 8 &&
-                   pindex8[i] != (uint64)INDEX_NOSCANNED &&
-                   pDemuxer->index[dwTrackIdx].pts[i] > PTS) {
-            pItems[2] = i;
-            pOffsets[2] = pindex8[i];
+            pOffsets[2] = pItem[i];
             break;
         }
         i++;

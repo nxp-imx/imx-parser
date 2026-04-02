@@ -1358,8 +1358,8 @@ int32 Mpeg2GetNextSyncSample(FslParserHandle parserHandle, uint32 direction, uin
 
         if (pStream[streamNum].isSyncFinished) {
 #ifndef ALLOW_SEEK_AND_SPEED
-            Err = Mpeg2ParserQueryIndex(pDemuxer, streamNum, pStream[streamNum].lastPTS, 1,
-                                        &fileOffset);
+            Err = Mpeg2ParserQueryIndex(pDemuxer, streamNum, pStream[streamNum].lastPTS,
+                                        FLAG_FORWARD, &fileOffset);
             if (PARSER_SUCCESS == Err) {
                 fileOffsetPre = fileOffset;
             } else if (PARSER_EOS == Err) {
@@ -1401,8 +1401,8 @@ int32 Mpeg2GetNextSyncSample(FslParserHandle parserHandle, uint32 direction, uin
 
         if (pStream[streamNum].isSyncFinished) {
 #ifndef ALLOW_SEEK_AND_SPEED
-            Err = Mpeg2ParserQueryIndex(pDemuxer, streamNum, pStream[streamNum].lastPTS, 2,
-                                        &fileOffset);
+            Err = Mpeg2ParserQueryIndex(pDemuxer, streamNum, pStream[streamNum].lastPTS,
+                                        FLAG_BACKWARD, &fileOffset);
             if (PARSER_SUCCESS == Err) {
                 fileOffsetPre = fileOffset;
             } else if (PARSER_BOS == Err) {
