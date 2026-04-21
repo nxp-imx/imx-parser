@@ -329,9 +329,9 @@ uint32 ParserAudioFrameOverlap(Audio_Parser_Base_t* pParserBase, uint8* pBuffer,
 #if 1
         if (nSegmentCnt == PARSERAUDIO_VBRDURATION) {
             AudioParserBuildSeekTable(pParserBase,
-                                      offset - pParserBase->nOverlap +
-                                              pFrameInfo->nFrameHeaderConsumed -
-                                              pParserBase->FileInfo.nFrameHeaderSize,
+                                      (int32)offset - (int32)pParserBase->nOverlap +
+                                              (int32)pFrameInfo->nFrameHeaderConsumed -
+                                              (int32)pParserBase->FileInfo.nFrameHeaderSize,
                                       pFrameInfo->nSamplesPerFrame, pFrameInfo->nSamplingRate);
         }
 #endif
