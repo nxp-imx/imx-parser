@@ -311,7 +311,12 @@ static __inline int get_se_golomb(GetBitContext* gb) {
         skip_nbits(gb, GOLOMB_VLC_LEN[cache]);
         return SE_GOLOMB_VLC_CODE[cache];
     } else {
-        log = (av_log2(cache) << 1) - 31;
+        log = ((int)av_log2(cache) << 1) - 31;
+        if (log < 0) {
+            log = 0;
+        } else if (log > 31) {
+            return 0;
+        }
         cache >>= log;
         skip_nbits(gb, 32 - log);
 

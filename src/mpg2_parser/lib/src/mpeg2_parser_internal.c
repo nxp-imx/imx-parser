@@ -1710,7 +1710,10 @@ MPEG2_PARSER_ERROR_CODE Mpeg2OutputMpeg2VideoFrame(MPEG2ObjectPtr pDemuxer, U32 
 
             for (j = 0; j < frameCount; j++) {
                 frameTypes[j] = frameTypes[j + i];
-                frameOffsets[j] = frameOffsets[j + i] - startOffset;
+                if(frameOffsets[j + i] > startOffset)
+                    frameOffsets[j] = frameOffsets[j + i] - startOffset;
+                else
+                    frameOffsets[j] = 0;
             }
         } else
             return PARSER_SUCCESS;
@@ -1774,7 +1777,10 @@ STORE_FRAME:
                 leftBytes = consumeBytes = newSegSize - tComsumedBytes;
             } else {
                 flag &= (~FLAG_SAMPLE_NOT_FINISHED);
-                leftBytes = consumeBytes = frameOffsets[i + 1] - frameOffsets[i];
+                if (frameOffsets[i + 1] > frameOffsets[i])
+                    leftBytes = consumeBytes = frameOffsets[i + 1] - frameOffsets[i];
+                else
+                    leftBytes = consumeBytes = 0;
             }
 
             // here, should check start_fill bytes
