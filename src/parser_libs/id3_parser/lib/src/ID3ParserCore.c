@@ -461,7 +461,7 @@ bool UnsyncRemoveV2_4(ID3* self, bool iTunesHack) {
             return FALSE;
         }
 
-        if ((offset + dataSize + 10 > self->mSize) || (int)dataSize < 0) {
+        if (((int)dataSize < 0) || (offset + dataSize + 10 > self->mSize)) {
             return FALSE;
         }
 

@@ -19,7 +19,7 @@
 #define OS_NAME ""
 #endif
 
-#define BASELINE_SHORT_NAME "MP3PARSER_04.00.02"
+#define BASELINE_SHORT_NAME "MP3PARSER_04.00.03"
 
 #define SEPARATOR " "
 /* user define suffix */
@@ -211,7 +211,7 @@ EXTERN int32 MP3ParserGetMovieDuration(FslParserHandle parserHandle, uint64* usD
         MP3ParserGetTrackDuration(parserHandle, 0, usDuration);
     } else
         *usDuration = ((mp3_parser_t*)parserHandle)->mp3_parser_core.usDuration;
-    PARSERMSG("Movie Duration: %d ms \r\n", *usDuration);
+    PARSERMSG("Movie Duration: %llu ms \r\n", *usDuration);
     return ret;
 }
 

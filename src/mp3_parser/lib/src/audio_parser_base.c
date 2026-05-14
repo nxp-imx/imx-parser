@@ -83,7 +83,7 @@ int32 AudioParserBaseCreate(Audio_Parser_Base_t* pParserBase, Parser_Input_Param
             PARSERMSG("Failed to get ID3 V2 size\n");
         }
         pParserBase->nBeginPoint += nID3V2_size;
-        PARSERMSG("ID3 V2 size is %d Bytes\n", pParserBase->nBeginPoint);
+        PARSERMSG("ID3 V2 size is %llu Bytes\n", pParserBase->nBeginPoint);
     }
 #endif
     /** Parser file header */
@@ -585,7 +585,7 @@ int32 ParserCalculateVBRDuration(Audio_Parser_Base_t* pParserBase) {
 
     memoryOps = pParserBase->memoryOps;
 
-    PARSERMSG("Begin point: %d\n", pParserBase->nBeginPoint);
+    PARSERMSG("Begin point: %llu\n", pParserBase->nBeginPoint);
     fileOps2.Seek(sourceFileHandle2, pParserBase->nBeginPoint, SEEK_SET, pParserBase->appContext);
 
     if (!pParserBase->hSeekTable)
@@ -840,7 +840,7 @@ int32 GetNextSample(Audio_Parser_Base_t* pParserBase, ParserOutputBufferOps* pBu
     pParserBase->nReadPoint += nActuralRead;
     pParserBase->nCurrentTimeUs =
             pParserBase->sAudioSeekPos + ((pParserBase->nSamplesRead * 1000000) / sample_rate);
-    PARSERMSG("nSamplesRead %d usStartTime %lld", pParserBase->nSamplesRead,
+    PARSERMSG("nSamplesRead %llu usStartTime %lld", pParserBase->nSamplesRead,
               (long long)*usStartTime);
 
     *usDuration = 1;
