@@ -2,30 +2,30 @@
   "SPDXID": "SPDXRef-DOCUMENT",
   "spdxVersion": "SPDX-2.3",
   "creationInfo": {
-    "created": "2026-03-13T09:15:16Z",
+    "created": "2026-06-02T02:49:15Z",
     "creators": [
       "Organization: NXP"
     ],
     "licenseListVersion": "3.26"
   },
-  "name": "imx-parser-master",
+  "name": "imx-parser-lf-6.18.20-2.0.0",
   "dataLicense": "CC0-1.0",
-  "documentNamespace": "https://nxp.com/spdx/6298b3ba-8b07-46ca-b9f1-9c1a177846de",
+  "documentNamespace": "https://nxp.com/spdx/1fd6abcc-5ab3-44d1-961c-94038bc64ac5",
   "packages": [
     {
-      "SPDXID": "SPDXRef-package-6298b3ba-8b07-46ca-b9f1-9c1a177846de",
+      "SPDXID": "SPDXRef-package-1fd6abcc-5ab3-44d1-961c-94038bc64ac5",
       "name": "imx-parser",
-      "versionInfo": "master",
-      "licenseConcluded": "(BSD-3-Clause)",
-      "licenseDeclared": "(BSD-3-Clause)",
-      "downloadLocation": "https://github.com/nxp-imx/imx-parser",
+      "versionInfo": "lf-6.18.20-2.0.0",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "downloadLocation": "https://github.com/nxp-imx/imx-parser -b lf-6.18.20-2.0.0",
       "originator": "Organization: NXP",
       "supplier": "NOASSERTION",
       "externalRefs": [],
       "filesAnalyzed": false
     },
     {
-      "SPDXID": "SPDXRef-package-6298b3ba-8b07-46ca-b9f1-9c1a177846de---b6abd442-1017-47b5-a5cb-b16f8fa352a1",
+      "SPDXID": "SPDXRef-package-1fd6abcc-5ab3-44d1-961c-94038bc64ac5---b6abd442-1017-47b5-a5cb-b16f8fa352a1",
       "name": "Android - platform - external - srec",
       "versionInfo": "android-1.0",
       "licenseConcluded": "Apache-2.0",
@@ -44,12 +44,12 @@
       "filesAnalyzed": false
     },
     {
-      "SPDXID": "SPDXRef-package-6298b3ba-8b07-46ca-b9f1-9c1a177846de---8405d272-3d68-4de3-bb16-cd9f9fbf582c",
+      "SPDXID": "SPDXRef-package-1fd6abcc-5ab3-44d1-961c-94038bc64ac5---8405d272-3d68-4de3-bb16-cd9f9fbf582c",
       "name": "Android-platform-frameworks-base",
       "versionInfo": "android-2.2_r1",
       "licenseConcluded": "Apache-2.0",
       "licenseDeclared": "Apache-2.0",
-      "homepage": "http://github.com/android/platform_system_core/",
+      "homepage": "http://github.com/android/platform_frameworks_base",
       "downloadLocation": "NOASSERTION",
       "originator": "Organization: android",
       "supplier": "NOASSERTION",
@@ -77,17 +77,17 @@
     {
       "spdxElementId": "SPDXRef-DOCUMENT",
       "relationshipType": "DESCRIBES",
-      "relatedSpdxElement": "SPDXRef-package-6298b3ba-8b07-46ca-b9f1-9c1a177846de"
+      "relatedSpdxElement": "SPDXRef-package-1fd6abcc-5ab3-44d1-961c-94038bc64ac5"
     },
     {
-      "spdxElementId": "SPDXRef-package-6298b3ba-8b07-46ca-b9f1-9c1a177846de",
+      "spdxElementId": "SPDXRef-package-1fd6abcc-5ab3-44d1-961c-94038bc64ac5",
       "relationshipType": "CONTAINS",
-      "relatedSpdxElement": "SPDXRef-package-6298b3ba-8b07-46ca-b9f1-9c1a177846de---8405d272-3d68-4de3-bb16-cd9f9fbf582c"
+      "relatedSpdxElement": "SPDXRef-package-1fd6abcc-5ab3-44d1-961c-94038bc64ac5---8405d272-3d68-4de3-bb16-cd9f9fbf582c"
     },
     {
-      "spdxElementId": "SPDXRef-package-6298b3ba-8b07-46ca-b9f1-9c1a177846de",
+      "spdxElementId": "SPDXRef-package-1fd6abcc-5ab3-44d1-961c-94038bc64ac5",
       "relationshipType": "CONTAINS",
-      "relatedSpdxElement": "SPDXRef-package-6298b3ba-8b07-46ca-b9f1-9c1a177846de---b6abd442-1017-47b5-a5cb-b16f8fa352a1"
+      "relatedSpdxElement": "SPDXRef-package-1fd6abcc-5ab3-44d1-961c-94038bc64ac5---b6abd442-1017-47b5-a5cb-b16f8fa352a1"
     }
   ]
 }
