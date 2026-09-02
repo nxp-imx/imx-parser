@@ -8,6 +8,7 @@
 
 #include "outputarray_manage.h"
 #include "string.h"
+#include "stdint.h"
 
 MPEG2_PARSER_ERROR_CODE InitOuputBufArray(ParserMemoryOps* pMemOps,
                                           OutputBufArray* pOutputBufArray) {
@@ -47,16 +48,16 @@ MPEG2_PARSER_ERROR_CODE ReallocUnits(ParserMemoryOps* pMemOps, OutputBufArray* p
         return PARSER_INSUFFICIENT_MEMORY;
 
     if (pOldLinkMem != pOutputBufArray->pLinkMem) {
-        int64 diff = (int64)pOutputBufArray->pLinkMem - (int64)pOldLinkMem;
-        pOutputBufArray->pHead = (OutputBufLink*)((int64)pOutputBufArray->pHead + diff);
-        pOutputBufArray->pTail = (OutputBufLink*)((int64)pOutputBufArray->pTail + diff);
+        uintptr_t diff = (uintptr_t)pOutputBufArray->pLinkMem - (uintptr_t)pOldLinkMem;
+        pOutputBufArray->pHead = (OutputBufLink*)((uintptr_t)pOutputBufArray->pHead + diff);
+        pOutputBufArray->pTail = (OutputBufLink*)((uintptr_t)pOutputBufArray->pTail + diff);
         if (pOutputBufArray->validCount != 0)
             pOutputBufArray->pValidTail =
-                    (OutputBufLink*)((int64)pOutputBufArray->pValidTail + diff);
+                    (OutputBufLink*)((uintptr_t)pOutputBufArray->pValidTail + diff);
         for (i = 0; i < count; i++) {
             pHead = &((OutputBufLink*)pOutputBufArray->pLinkMem)[i];
             if (pHead->pNextUnit != NULL)
-                pHead->pNextUnit = (OutputBufLink*)((int64)pHead->pNextUnit + diff);
+                pHead->pNextUnit = (OutputBufLink*)((uintptr_t)pHead->pNextUnit + diff);
         }
 
         /*
